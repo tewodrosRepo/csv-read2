@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f2b67747-79c7-43d9-b5fb-c834da9bdb5e" >
+		<http:listener-connection host="0.0.0.0" port="8081" readTimeout="300" />
+	</http:listener-config>
+	<flow name="read-csv2Flow" doc:id="f9e19ec1-b6e4-48de-985d-84e772bbd14b" >
+		<scheduler doc:name="Scheduler" doc:id="3319a911-21bd-47ed-9d1d-fad3db3b4060" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="10" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<ee:transform doc:name="Transform Message" doc:id="39ab56a1-b297-4792-b0c6-ea6d560da08a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	'triggered':now()
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="a6735755-dc1e-4ee0-9344-f77b4d4bed38" path="C:\Users\tady\Favorites\Desktop\MuleSoft_Training\OutPut\Scheduler.json" mode="APPEND"/>
+		<logger level="INFO" doc:name="Logger" doc:id="44a04808-56e2-45b1-b9b7-977808d54a7c" message="Triggered Sucessfully"/>
+	</flow>
+	<flow name="read-csv2Flow1" doc:id="1980b206-c0a6-413a-be73-c6cc8c030e1b" >
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="e5db6fb8-d02d-4a5b-921f-da9c16fbabe9" />
+	</flow>
+</mule>
